@@ -6,4 +6,4 @@ sidebar_position: 3
 
 WIP.
 
-Better start with the [intro](../1-start/index.md) for now.
+Better start with the [intro](../1-start/1-index.md) for now.

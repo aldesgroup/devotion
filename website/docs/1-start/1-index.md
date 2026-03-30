@@ -7,9 +7,9 @@ sidebar_position: 1
 - [Introduction](#introduction)
   - [Components](#components)
 
-**Devotion** is a hybrid fullstack framework that - for now - allows to build a `Go` API, with maybe a `React`-based web client, and / or maybe `React Native`-based Android / iOS app clients.
+**Devotion** is a hybrid fullstack framework that - for now - allows to build togeter a `Go` API, with maybe a `React`-based web client, and / or maybe `React Native`-based Android / iOS app clients.
 
-It helps building and deploying this kind of setup:
+So it basically helps developing and deploying this kind of setup:
 
 ```mermaid
 flowchart
@@ -24,9 +24,9 @@ flowchart
     classDef clsOther fill:#555555,color:#fff;
 ```
 
-<br />
+<br/>
 
-:::info
+:::info[Important info]
 Devotion is made to work on **Unix**-based dev environments.
 :::
 

@@ -8,4 +8,4 @@ Some **core** utils for our **Go** libraries.
 
 WIP.
 
-Better start with the [intro](../1-start/index.md) for now.
+Better start with the [intro](../1-start/1-index.md) for now.
