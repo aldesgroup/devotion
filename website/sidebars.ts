@@ -1,5 +1,5 @@
 import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
-import goaldnMenu from './docs/goaldn/api/typedoc-sidebar';
+import goaldnMenu from './docs/5-goaldn/api/typedoc-sidebar';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -16,9 +16,9 @@ import goaldnMenu from './docs/goaldn/api/typedoc-sidebar';
 const sidebars: SidebarsConfig = {
     guideSidebar: [
         {
-            type: 'doc',
-            id: 'intro',
-            label: 'Introduction',
+            type: 'category',
+            label: 'Getting started',
+            items: ['start/index'],
         },
         {
             type: 'category',
@@ -54,6 +54,16 @@ const sidebars: SidebarsConfig = {
             type: 'category',
             label: 'GoaldR',
             items: ['goaldr/index'],
+        },
+        {
+            type: 'category',
+            label: 'CoreGo',
+            items: ['corego/index'],
+        },
+        {
+            type: 'category',
+            label: 'CaroTS',
+            items: ['carots/index'],
         },
     ],
 };

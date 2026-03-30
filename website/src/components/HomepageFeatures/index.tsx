@@ -11,6 +11,32 @@ type FeatureItem = {
 };
 
 const FeatureList: FeatureItem[] = [
+     {
+        title: 'Aldev',
+        link: 'docs/aldev',
+        Svg: require('@site/static/img/aldev.svg').default,
+        description: <>Dev assistant that ties the hybrid framework together, and much more.</>,
+    },
+    {
+        title: 'CoreGo',
+        link: 'docs/corego',
+        Svg: require('@site/static/img/corego.svg').default,
+        description: <>
+        Go utils shared between our Go libs,
+        <br></br>
+        like Aldev and Goald.
+        </>,
+    },
+    {
+        title: 'CaroTS',
+        link: 'docs/carots',
+        Svg: require('@site/static/img/carots.svg').default,
+        description: <>
+        TS utils shared between our Typescript libs,
+        <br></br>
+        like GoaldR and GoaldN.
+        </>,
+    },
     {
         title: 'Goald',
         link: 'docs/goald',
@@ -29,12 +55,7 @@ const FeatureList: FeatureItem[] = [
         Svg: require('@site/static/img/goaldn.svg').default,
         description: <>React Native framework for building mobile apps working with Goald app servers.</>,
     },
-    {
-        title: 'Aldev',
-        link: 'docs/aldev',
-        Svg: require('@site/static/img/aldev.svg').default,
-        description: <>Dev assistant that relies on Goald's Go-code-first approach in Devotion-based app projects.</>,
-    },
+
 ];
 
 function Feature({title, Svg, description, link}: FeatureItem) {

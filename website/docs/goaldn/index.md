@@ -1,9 +1,0 @@
----
-sidebar_position: 1
----
-
-# GoaldN Documentation
-
-WIP.
-
-Better start with the [intro](../intro.md) for now.

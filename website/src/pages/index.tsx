@@ -11,7 +11,7 @@ function HomepageHeader() {
   return (
 		<header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className="container">
-				<img src="img/devotion.svg" alt="Devotion Logo" width={300} />
+				<img src="img/devotion.svg" alt="Devotion Logo" width={200} />
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
         </Heading>
@@ -26,7 +26,6 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
-			description="Description will go into a meta tag in <head />"
 		>
       <HomepageHeader />
       <main>
