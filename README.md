@@ -6,8 +6,6 @@ This repository contains the documentation for the Devotion project, a comprehen
   - [Installation](#installation)
   - [Development](#development)
   - [Deployment](#deployment)
-    - [Configuration](#configuration)
-    - [Styling](#styling)
   - [License](#license)
 
 [top](#devotion-documentation)
@@ -47,6 +45,7 @@ The content is structured this way:
 - First page is [here](./website/src/pages/index.tsx)
 - The website config & layout is [here](./website/docusaurus.config.ts)
 - The side bar is configured [here](./website/sidebars.ts)
+- Global styles are in [here](./website/src/css/custom.css)
 - The documentation pages are organised [here](./website/docs/)
 
 [top](#devotion-documentation)
@@ -56,27 +55,6 @@ The content is structured this way:
 ## Deployment
 
 The documentation is automatically deployed to GitHub Pages using GitHub Actions. The workflow is configured in `.github/workflows/deploy.yml`.
-
-[top](#devotion-documentation)
-
----
-
-### Configuration
-
-The main configuration file is `docusaurus.config.js`. Here you can:
-- Change the site title and description
-- Configure navigation
-- Set up plugins
-- Customize the theme
-
-[top](#devotion-documentation)
-
----
-
-### Styling
-
-- Global styles are in `src/css/custom.css`
-- Component-specific styles can be added in the component files
 
 [top](#devotion-documentation)
 
