@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# GoaldN Documentation
+# CoreGo Documentation
 
 WIP.
 
