@@ -34,11 +34,13 @@ Devotion is made to work on **Unix**-based dev environments.
 It might only partially work on Windows.
 :::
 
-[top]()
+[top](#introduction)
+
+---
 
 ## Components
 
-**Devotion** can be seen as 1 tool - [Aldev](../2-aldev/index.md) - and 5 libraries working together: [Goald](../3-goald/index.md), [GoaldR](../4-goaldr/index.md), [GoaldN](../5-goaldn/index.md), [CoreGo](../6-corego/index.md) and [CaroTS](../7-carots/):
+**Devotion** can be seen as 1 tool - [Aldev](../2-aldev/index.md) - and 5 libraries working together: [Goald](../3-goald/index.md), [GoaldR](../4-goaldr/index.md), [GoaldN](../5-goaldn/index.md), [CoreGo](../6-corego/index.md) and [CaroTS](../7-carots/index.md):
 
 ```mermaid
 flowchart
@@ -67,5 +69,5 @@ flowchart
 ```
 
 :::tip[As we'll see later on]
-[Aldev](../2-aldev/index.md) is our crucial, special tool that helps build, locally and remotely deploy, test, and maintain both the libraries and the apps based on them. [Aldev](../2-aldev/index.md) can be considered the **heart of Devotion**.
+[Aldev](../2-aldev/index.md) is our special tool that helps build, locally and remotely deploy, test, and maintain both the libraries and the apps using them.
 :::
