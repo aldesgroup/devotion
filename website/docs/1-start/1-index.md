@@ -1,13 +1,9 @@
----
-sidebar_position: 1
----
-
 # Introduction
 
 - [Introduction](#introduction)
   - [Components](#components)
 
-**Devotion** is a hybrid fullstack framework that - for now - allows to build togeter a `Go` API, with maybe a `React`-based web client, and / or maybe `React Native`-based Android / iOS app clients.
+**Devotion** is a hybrid fullstack framework that - for now - allows to build _together_ a `Go` API, with maybe a `React`-based web client, and / or maybe a `React Native`-based Android / iOS app client.
 
 So it basically helps developing and deploying this kind of setup:
 
@@ -34,7 +30,9 @@ Devotion is made to work on **Unix**-based dev environments.
 It might only partially work on Windows.
 :::
 
-[top](#introduction)
+<br/>
+
+[top](#)
 
 ---
 
@@ -53,11 +51,11 @@ flowchart
     native["Android / iOS app <br>(via React Native)"]
     %% other[Some other clients we're not developing ourselves]
 
-    CoreGo(["CoreGo <br >(library)"]):::clsApi -- is used in --> Goald & Aldev
-    Goald(["Goald <br >(library)"]):::clsApi -- is used in --> api
-    GoaldR(["GoaldR <br >(library)"]):::clsWeb -- is used in --> react
-    GoaldN(["GoaldN <br >(library)"]):::clsMob -- is used in --> native
-    CaroTS(["CaroTS <br >(library)"]):::clsWeb -- is used in --> GoaldR & GoaldN
+    CoreGo(["CoreGo <br >(library)"]):::clsApi -- is used to develop --> Goald & Aldev
+    Goald(["Goald <br >(library)"]):::clsApi -- is used to develop --> api
+    GoaldR(["GoaldR <br >(library)"]):::clsWeb -- is used to develop --> react
+    GoaldN(["GoaldN <br >(library)"]):::clsMob -- is used to develop --> native
+    CaroTS(["CaroTS <br >(library)"]):::clsWeb -- is used to develop --> GoaldR & GoaldN
 
     classDef clsApi fill:#000099,color:#fff;
     classDef clsWeb fill:#009900,color:#fff;
@@ -71,3 +69,9 @@ flowchart
 :::tip[As we'll see later on]
 [Aldev](../2-aldev/index.md) is our special tool that helps build, locally and remotely deploy, test, and maintain both the libraries and the apps using them.
 :::
+
+<br/>
+
+[top](#)
+
+---

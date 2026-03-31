@@ -18,7 +18,19 @@ const sidebars: SidebarsConfig = {
         {
             type: 'category',
             label: 'Getting started',
-            items: ['start/index'],
+            items: [
+                'start/index',
+                {
+                    type: 'doc',
+                    id: 'start/prerequisites',
+                    label: 'Prerequisites',
+                },
+                {
+                    type: 'doc',
+                    id: 'start/setup',
+                    label: 'Setup',
+                },
+            ],
         },
         {
             type: 'category',

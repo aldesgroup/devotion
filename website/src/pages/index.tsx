@@ -10,7 +10,9 @@ function HomepageHeader() {
 	const { siteConfig } = useDocusaurusContext();
   return (
 		<header className={clsx("hero hero--primary", styles.heroBanner)}>
-      <div className="container">
+      <div className="container" onClick={() => {
+                        window.location.href = "docs/start/index";
+                    }}>
 				<img src="img/devotion.svg" alt="Devotion Logo" width={200} />
         <Heading as="h1" className="hero__title">
           {siteConfig.title}

@@ -1,0 +1,269 @@
+# Setup
+
+- [Setup](#setup)
+  - [Go install](#go-install)
+  - [Podman](#podman)
+  - [Node](#node)
+  - [Aldev](#aldev)
+    - [Optional: working on Aldev](#optional-working-on-aldev)
+  - [Optional: framework libraries](#optional-framework-libraries)
+  - [For Android apps](#for-android-apps)
+    - [Java](#java)
+    - [Android SDK \& CLI tools](#android-sdk--cli-tools)
+  - [Custom](#custom)
+    - [For Azure targets](#for-azure-targets)
+
+While the previous [prerequisites](./2-prerequisites.mdx) step was a bit about the generic local "infra" we need for development, with a lot of optional stuff, this _setup_ phase is about the absolute requirements for Devotion to build & run.
+
+## Go install
+
+First, let's make sure we have this in our `.zshenv` file: `code ~/.zshenv`:
+
+```sh
+### PATH
+export GOPATH=$HOME/.local/go
+export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
+export GITOPEN=$HOME/Git/open
+export GITPRIV=$HOME/Git/private
+mkdir -p $GITOPEN
+mkdir -p $GITPRIV
+
+### BREW
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+```
+
+Then: `source ~/.zshenv`
+
+Finally:
+
+```sh
+# install go
+brew install go
+# check
+go version
+# utility we use for formatting
+go install mvdan.cc/gofumpt@latest
+```
+
+<br/>
+
+[top](#)
+
+---
+
+## Podman
+
+Since we want to:
+
+- run our Go APIs to be multi-instanciated when deployed - for high availability, rolling updates, etc.
+- mirror the remote envs as much as possible in our local environment
+
+we're going to use `podman` to locally build and run containers running our Go APIs:
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs groupId="operating-systems">
+  <TabItem value="Linux" default>
+
+```sh
+# Linux - APT is better than Homebrew here
+sudo apt update
+sudo apt -y install podman
+
+# ... but APT does not have the latest version for podman compose
+sudo apt install -y pipx
+pipx ensurepath
+source ~/.zshenv
+pipx install podman-compose
+```
+
+  </TabItem>
+  <TabItem value="macOS">
+
+TODO
+
+  </TabItem>
+</Tabs>
+
+<br/>
+
+[top](#)
+
+---
+
+## Node
+
+Let's do this:
+
+```sh
+# Installation
+brew install node
+# Verify the Node.js version:
+node -v # Should print something like "v25.2.1".
+# Verify npm version:
+npm -v # Should print something like "11.6.2".
+```
+
+We'll need this well known tool to control the dependencies version:
+
+```sh
+npm install -g npm-check-updates
+```
+
+<br/>
+
+[top](#)
+
+---
+
+## Aldev
+
+For now, we install `aldev` this way:
+
+```sh
+cd $GITOPEN && git clone https://github.com/aldesgroup/aldev.git && cd aldev && go install . && cd $HOME
+```
+
+Try it with: `aldev -h`
+
+### Optional: working on Aldev
+
+Should you have changes to bring to `aldev`:
+
+```sh
+# we need this to automate rebuilding aldev when changed
+brew install watchexec
+
+# you can add this to your .zshenv file:
+alias ald="cd $GITOPEN/aldev && go install . &&  watchexec --quiet --shell=none --restart --watch . --exts go -- bash -c 'go install . && echo aldev install updated @ \$(date +\"%T\")'"
+
+# then when working on Aldev, run this in a shell window:
+ald
+```
+
+<br/>
+
+[top](#)
+
+---
+
+## Optional: framework libraries
+
+If you need to change something to the Framework's code:
+
+```sh
+# open parts of Devotion
+cd $GITOPEN && git clone https://github.com/aldesgroup/goald.git
+cd $GITOPEN && git clone https://github.com/aldesgroup/goaldr.git
+cd $GITOPEN && git clone https://github.com/aldesgroup/goaldn.git
+cd $GITOPEN && git clone https://github.com/aldesgroup/corego.git
+cd $GITOPEN && git clone https://github.com/aldesgroup/carots.git
+
+# optional: Devotion's documentation & project template
+cd $GITOPEN && git clone https://github.com/aldesgroup/devotion.git
+cd $GITOPEN && git clone https://github.com/aldesgroup/devotion-project-template.git
+```
+
+Optional: if you open these libraries under an IDE (VS Code for instance) and do not want to see a lot of warnings:
+
+```sh
+cd $GITOPEN/goaldn && npm i && npm audit fix
+cd $GITOPEN/goaldr && npm i && npm audit fix
+```
+
+> **NB**: if you need to contribute to these projects, check beforehand you have a valid SSH key for your identity + this in the project's `.git/config` file:
+
+```sh
+[remote "origin"]
+        url = git@github.com:aldesgroup/corego.git
+```
+
+<br/>
+
+[top](#)
+
+---
+
+## For Android apps
+
+### Java
+
+Install it with:
+
+```sh
+brew install openjdk@17
+```
+
+Then make sure you have this in your `.zshenv` file (`code ~/.zshenv`):
+
+```sh
+### JAVA
+export JAVA_HOME=/home/linuxbrew/.linuxbrew/opt/openjdk@17
+export PATH=$PATH:$JAVA_HOME/bin
+```
+
+Re-source the env file (with `senv` for instance). You should be able to do:
+
+```sh
+java -version
+javac -version
+```
+
+<br/>
+
+[top](#)
+
+---
+
+### Android SDK & CLI tools
+
+Install Android Studio from the App Center (or the official page), or the equivalent:
+
+```sh
+# LINUX
+sudo snap install android-studio --classic
+
+# MACOS
+brew install android-studio
+```
+
+Then make sure you have this in your `.zshenv` file:
+
+```sh
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+
+```
+
+<br/>
+
+[top](#)
+
+---
+
+## Custom
+
+:::note[Nota bene]
+The following points depend on your deployment targets.
+:::
+
+### For Azure targets
+
+```sh
+# Azure CLI
+brew install azure-cli
+
+# Terraform
+brew tap hashicorp/tap
+brew install hashicorp/tap/terraform
+```
+
+<br/>
+
+[top](#)
+
+---

@@ -1,0 +1,267 @@
+# Prerequisites
+
+- [Prerequisites](#prerequisites)
+  - [Unix OS](#unix-os)
+  - [Terminal](#terminal)
+  - [Git](#git)
+  - [Brew](#brew)
+  - [VSCode](#vscode)
+    - [Useful VSCode extensions](#useful-vscode-extensions)
+  - [Shell](#shell)
+  - [Extra stuff](#extra-stuff)
+    - [Resource monitoring](#resource-monitoring)
+
+Here we describe what the dev machine should have before the actual [setup](./3-setup.md) of the Devotion work environment.
+
+---
+
+## Unix OS
+
+Weither it's a Linux distro like Ubuntu, or MacOS, we'll indeed need an Unix-based OS so as to be able to:
+
+- Work with `podman` containers
+- And, at the same time, work with emulators (such as Android's)
+
+This alone is pretty much a case against Windows, even with WSL2 - which could work though, but with much hack & luck.
+
+<br/>
+
+[top](#)
+
+---
+
+## Terminal
+
+This is a matter of taste here. But if you're looking for advice, here is what we can recommend:
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+<Tabs groupId="operating-systems">
+  <TabItem value="Linux" default>
+
+On Ubuntu, **Tilix** is cool, and is already present with some Ubuntu distros like Budgie. You can install it from the App Center.
+
+Here's some optional but useful customisation you can make for **Tilix**:
+
+```md
+- Settings > Default > Command > Run command as a login shell
+- Remove the terminal titles (Appearance > Terminal title style = none, And : Window style = disable CSD, hide toolbar)
+- Change shortcut for the "preferences" to `ctrl + ,`
+- You may change the shortcuts for "copy" and "paste", and "close terminal", also
+- Other shortcut changes:
+  - Add terminal down / right: ctrl shift down / right
+  - Close terminal: ctrl w
+  - Clear: ctrl shift k
+  - Maximize terminal: shift ctrl enter
+- Add some transparency from the profile (> Color) :)
+```
+
+  </TabItem>
+  <TabItem value="macOS">
+
+Nothing beats [iTerm2](https://iterm2.com/) :)
+
+  </TabItem>
+</Tabs>
+
+<br/>
+
+[top](#)
+
+---
+
+## Git
+
+<Tabs groupId="operating-systems">
+  <TabItem value="Linux" default>
+
+If not already there:
+
+```sh
+# in a terminal
+sudo apt update && sudo apt upgrade -y
+
+# this will be a must
+sudo apt install git curl nano -y
+```
+
+  </TabItem>
+  <TabItem value="macOS">
+
+TODO
+
+  </TabItem>
+</Tabs>
+
+Then, for each project:
+
+```sh
+git config user.email "firstname.lastname@domain.com"
+git config user.name "Firstname Lastname"
+```
+
+Or, if you have only one developer identify, you can do once and for all:
+
+
+```sh
+git config --global user.email "firstname.lastname@domain.com"
+git config --global user.name "Firstname Lastname"
+```
+
+<br/>
+
+[top](#)
+
+---
+
+## Brew
+
+Why Homebrew - with its `brew` command ? Because it works on Linux AND MacOS.
+
+**Install** it following the [very first instruction](https://brew.sh/):
+
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Then, the following is important:
+
+```sh
+# Linux
+sudo apt install build-essential procps -y
+
+# Put the output of this in your shell source file (.bashrc, or later .zshenv)
+/home/linuxbrew/.linuxbrew/bin/brew shellenv
+
+# For instance:
+echo >> /home/jwan/.bashrc
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/jwan/.bashrc
+
+# In the meantime, we can still use this
+alias brew="/home/linuxbrew/.linuxbrew/bin/brew"
+
+# MacOS
+# Just follow the prompt
+```
+
+Then **restart your shell**.
+
+**Make sure this is ok with command**: `brew doctor`. You should see: `Your system is ready to brew.`
+
+<br/>
+
+[top](#)
+
+---
+
+## VSCode
+
+As for the terminal, this is a matter of taste. Feel free to chose your favorite editor.
+
+If you're interested in VScode, then:
+
+<Tabs groupId="operating-systems">
+  <TabItem value="Linux" default>
+
+```sh
+# vs code keys and sources list
+echo 'code code/add-microsoft-repo boolean true' | sudo debconf-set-selections
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /tmp/packages.microsoft.gpg
+sudo install -D -o root -g root -m 644 /tmp/packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" \
+| sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+
+rm -f /tmp/packages.microsoft.gpg
+
+# install vs code
+sudo apt update -qqy
+sudo apt install -qqy code
+```
+
+  </TabItem>
+  <TabItem value="macOS">
+
+```sh
+brew install --cask visual-studio-code
+```
+
+  </TabItem>
+</Tabs>
+
+### Useful VSCode extensions
+
+- Markdown All In One
+- Markdown Preview Mermaid Support
+- Mermaid Markdown Syntax Highlighting
+- Prettier - Code formatter
+- Todo Tree
+- GlassIt-VSC
+- Go
+
+<br/>
+
+[top](#)
+
+---
+
+## Shell
+
+If you haven't your favorite tool yet, try ZSH, the great shell engine:
+
+```sh
+brew install zsh
+zsh --version
+echo $(which zsh) | sudo tee -a /etc/shells
+chsh -s $(which zsh)
+```
+
+Then install oh-my-zsh:
+
+```sh
+# MACOS:
+brew install wget
+
+# doing this from the right place!
+cd $HOME
+ZSH=~/.oh-my-zsh sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# then
+nano .zshrc # then set ZSH_THEME="crcandy", or something you like more
+
+# LINUX: finally - adapt the path to your own case
+echo >> /home/jwan/.zshrc
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/jwan/.zshrc
+```
+
+**Restart** the shell to see the changes.
+
+<br/>
+
+[top](#)
+
+---
+
+## Extra stuff
+
+### Resource monitoring
+
+<Tabs groupId="operating-systems">
+  <TabItem value="Linux" default>
+
+On Ubuntu, you can use this: https://github.com/AstraExt/astra-monitor
+
+  </TabItem>
+  <TabItem value="macOS">
+
+This is great stuff: https://menumeters.macupdate.com/
+
+  </TabItem>
+</Tabs>
+
+<br/>
+
+[top](#)
+
+---

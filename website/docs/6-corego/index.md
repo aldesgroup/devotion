@@ -1,7 +1,3 @@
----
-sidebar_position: 6
----
-
 # CoreGo Documentation
 
 Some **core** utils for our **Go** libraries.

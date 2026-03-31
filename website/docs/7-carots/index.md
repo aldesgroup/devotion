@@ -1,7 +1,3 @@
----
-sidebar_position: 7
----
-
 # CaroTS Documentation
 
 With this, we take "car'o'TS"' code once and for all!
