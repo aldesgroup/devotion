@@ -15,6 +15,12 @@
 
 While the previous [prerequisites](./2-prerequisites.mdx) step was a bit about the generic local "infra" we need for development, with a lot of optional stuff, this _setup_ phase is about the absolute requirements for Devotion to build & run.
 
+<br/>
+
+[top](#)
+
+---
+
 ## Go install
 
 First, let's make sure we have this in our `.zshenv` file: `code ~/.zshenv`:
@@ -220,13 +226,22 @@ javac -version
 
 Install Android Studio from the App Center (or the official page), or the equivalent:
 
-```sh
-# LINUX
-sudo snap install android-studio --classic
+<Tabs groupId="operating-systems">
+  <TabItem value="Linux" default>
 
-# MACOS
+```sh
+sudo snap install android-studio --classic
+```
+
+  </TabItem>
+  <TabItem value="macOS">
+
+```sh
 brew install android-studio
 ```
+
+  </TabItem>
+</Tabs>
 
 Then make sure you have this in your `.zshenv` file:
 

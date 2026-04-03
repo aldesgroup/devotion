@@ -18,7 +18,7 @@ const FeatureList: FeatureItem[] = [
         description: <>Dev assistant that ties the hybrid framework together, and much more.</>,
     },
     {
-        title: 'CoreGo',
+        title: 'CoreGO',
         link: 'docs/corego',
         Svg: require('@site/static/img/corego.svg').default,
         description: <>

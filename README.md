@@ -4,7 +4,7 @@ This repository contains the documentation for the Devotion project, a comprehen
 
 - [Devotion Documentation](#devotion-documentation)
   - [Installation](#installation)
-  - [Development](#development)
+  - [Writing](#writing)
   - [Deployment](#deployment)
   - [License](#license)
 
@@ -30,7 +30,7 @@ npm install
 
 ---
 
-## Development
+## Writing
 
 To start the development server:
 

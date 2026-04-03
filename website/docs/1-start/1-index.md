@@ -38,7 +38,7 @@ It might only partially work on Windows.
 
 ## Components
 
-**Devotion** can be seen as 1 tool - [Aldev](../2-aldev/index.md) - and 5 libraries working together: [Goald](../3-goald/index.md), [GoaldR](../4-goaldr/index.md), [GoaldN](../5-goaldn/index.md), [CoreGo](../6-corego/index.md) and [CaroTS](../7-carots/index.md):
+**Devotion** can be seen as 1 tool - [Aldev](../2-aldev/index.md) - and 5 libraries working together: [Goald](../3-goald/index.md), [GoaldR](../4-goaldr/index.md), [GoaldN](../5-goaldn/index.md), [CoreGO](../6-corego/index.md) and [CaroTS](../7-carots/index.md):
 
 ```mermaid
 flowchart
@@ -51,7 +51,7 @@ flowchart
     native["Android / iOS app <br>(via React Native)"]
     %% other[Some other clients we're not developing ourselves]
 
-    CoreGo(["CoreGo <br >(library)"]):::clsApi -- is used to develop --> Goald & Aldev
+    CoreGO(["CoreGO <br >(library)"]):::clsApi -- is used to develop --> Goald & Aldev
     Goald(["Goald <br >(library)"]):::clsApi -- is used to develop --> api
     GoaldR(["GoaldR <br >(library)"]):::clsWeb -- is used to develop --> react
     GoaldN(["GoaldN <br >(library)"]):::clsMob -- is used to develop --> native

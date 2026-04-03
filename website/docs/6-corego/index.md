@@ -1,4 +1,4 @@
-# CoreGo Documentation
+# CoreGO Documentation
 
 Some **core** utils for our **Go** libraries.
 

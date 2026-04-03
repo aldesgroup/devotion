@@ -30,6 +30,11 @@ const sidebars: SidebarsConfig = {
                     id: 'start/setup',
                     label: 'Setup',
                 },
+                {
+                    type: 'doc',
+                    id: 'start/bootstrap',
+                    label: 'Bootstrap',
+                },
             ],
         },
         {
@@ -69,7 +74,7 @@ const sidebars: SidebarsConfig = {
         },
         {
             type: 'category',
-            label: 'CoreGo',
+            label: 'CoreGO',
             items: ['corego/index'],
         },
         {
