@@ -5,6 +5,8 @@ Here we describe how to can start new Devotion projects.
 - [Bootstrap](#bootstrap)
   - [New pure API project](#new-pure-api-project)
     - [Project creation](#project-creation)
+    - [Running the new API](#running-the-new-api)
+    - [Testing the API](#testing-the-api)
 
 <br/>
 
@@ -15,14 +17,60 @@ Here we describe how to can start new Devotion projects.
 ### Project creation
 
 ```sh
-aldev bootstrap --name MyNewApi --web-less
+cd $GITPRIV && aldev bootstrap --name MyNewApi --web-less
 ```
 
-:::warning
-This is a WIP!
+This creates a new project in a folder called: `./my-new-api`.
 
-Other parts will be coming "soon" 😋
-:::
+<br/>
+
+[top](#)
+
+---
+
+### Running the new API
+
+First, go into the project: `cd my-new-api`.
+
+We run the API server with just:
+
+```sh
+aldev
+```
+
+Or, if you want more details about what's under the hood:
+
+```sh
+aldev -v
+# or
+aldev --verbose
+```
+
+You can learn more about `[aldev](../2-aldev/index.md)` later, but what you can at least see from the logs is that it created 3 instances of your new API + a load balancer (nginx) in front of it. What can be confirmed by this:
+
+```sh
+podman ps
+```
+
+<br/>
+
+[top](#)
+
+---
+
+### Testing the API
+
+In another terminal window, do this:
+
+```sh
+curl http://localhost:42042/rest/translation/fr\?Namespace\=Common
+```
+
+This should return a JSON response with translations.
+
+:::info
+If you repeat this request several times, you'll see in `aldev`'s log that the load balancing is effective.
+::::
 
 <br/>
 
