@@ -6,7 +6,10 @@ Here we describe how to can start new Devotion projects.
   - [New pure API project](#new-pure-api-project)
     - [Project creation](#project-creation)
     - [Running the new API](#running-the-new-api)
+    - [Developing \& testing the API](#developing--testing-the-api)
     - [Testing the API](#testing-the-api)
+    - [Deploying](#deploying)
+      - [First deployment steps](#first-deployment-steps)
 
 <br/>
 
@@ -21,6 +24,8 @@ cd $GITPRIV && aldev bootstrap --name MyNewApi --web-less
 ```
 
 This creates a new project in a folder called: `./my-new-api`.
+
+The Go API code is in the `/api` folder.
 
 <br/>
 
@@ -46,7 +51,9 @@ aldev -v
 aldev --verbose
 ```
 
-You can learn more about `[aldev](../2-aldev/index.md)` later, but what you can at least see from the logs is that it created 3 instances of your new API + a load balancer (nginx) in front of it. What can be confirmed by this:
+You can learn more about [`aldev`](../2-aldev/index.md) later, but what you can at least see from the logs is that it created 3 instances of your new API + a load balancer (Nginx) in front of them. 
+
+Which can be confirmed by checking with this:
 
 ```sh
 podman ps
@@ -58,9 +65,25 @@ podman ps
 
 ---
 
+### Developing & testing the API
+
+You can start modifying the Go code in the `/api` folder. 
+
+> More details about how it's architectured in the [Goald documentation](../3-goald/index.md).
+
+As soon as you save your changes, [aldev](../2-aldev/index.md) will perform automatic operations, and locally re-deploy the updated server's instances.
+
+Which allow for quick _dev & test_ iterations.
+
+<br/>
+
+[top](#)
+
+---
+
 ### Testing the API
 
-In another terminal window, do this:
+To test, do this in another terminal window:
 
 ```sh
 curl http://localhost:42042/rest/translation/fr\?Namespace\=Common
@@ -71,6 +94,37 @@ This should return a JSON response with translations.
 :::info
 If you repeat this request several times, you'll see in `aldev`'s log that the load balancing is effective.
 ::::
+
+<br/>
+
+[top](#)
+
+---
+
+### Deploying
+
+Depending on what's configured in the `.aldev.yaml` file, CI/CD and infrastructure management can be assisted by `aldev`. 
+
+In particular:
+
+- the config item `deploying > platform` influences what files (e.g. Terraform configs) `aldev` generates to help with infra
+- the config item `deploying > cicd` influences what files (form instance: `.gitlab-ci.yml`) `aldev` generates to help with CI/CD
+
+For now:
+
+- only the value `"azure"` for `deploying > platform` has an effect: it triggers the creation of Terraform Azure configs in the `deploy/remote` folder
+- only the value `"gitlab"` for `deploying > cicd`, in conjonction with `deploying > platform = azure` has an effect: it triggers the creation of a `.gitlab-ci.yml` file, which help deploying to Azure
+
+#### First deployment steps
+
+1. Fill in the necessary deployment info in `.aldev.yaml` - i.e. remove the `???` placeholders
+2. Force the regeneration of all the config files with `aldev confgen --regen` or `aldev confgen -r`
+3. Git-push the code to its remote `main` branch to deploy to the `SANDBOX` environment (for instance: `dev`)
+   1. Git-tag (`git tag v0.0.1`), and `git push --tags`, to deploy to the `STAGING` environment (for instance: `qua`)
+   1. Manually trigger the _production deploy job_ to deploy to the `PRODUCTION` environment (for instance: `prd`)
+4. Go into the `deploy/remote` folder and use the IaC configs
+   1. For instance, if `platform = azure`, run `terraform apply` from within each subfolder of `deploy/remote`
+5. Test the deployment has gone ok
 
 <br/>
 
