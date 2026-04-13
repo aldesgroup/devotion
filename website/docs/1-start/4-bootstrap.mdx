@@ -11,6 +11,10 @@ Here we describe how to can start new Devotion projects.
     - [Deploying](#deploying)
       - [Handled platforms](#handled-platforms)
       - [First deployment steps](#first-deployment-steps)
+        - [Azure deployment + Gitlab CI: requirements](#azure-deployment--gitlab-ci-requirements)
+        - [Azure deployment + Gitlab CI: creating the infra - SANDBOX env ("dev")](#azure-deployment--gitlab-ci-creating-the-infra---sandbox-env-dev)
+        - [Azure deployment + Gitlab CI: creating the infra - STAGING env ("qua")](#azure-deployment--gitlab-ci-creating-the-infra---staging-env-qua)
+        - [Azure deployment + Gitlab CI: creating the infra - PRODUCTION env ("prd")](#azure-deployment--gitlab-ci-creating-the-infra---production-env-prd)
 
 <br/>
 
@@ -22,19 +26,33 @@ Here we describe how to can start new Devotion projects.
 
 ```sh
 cd $GITPRIV && aldev bootstrap --name MyNewApi --web-less
+
+# shorter:
+cd $GITPRIV && aldev bootstrap -n MyNewApi -w
 ```
 
 This creates a new project in a folder called: `./my-new-api`.
 
 :::info
-You can also bootstrap in an existing Git project:
+To bootstrap within an **existing Git project**:
 
 ```sh
-# For instance, ./my-new-api could already contain a .git directory, after a git cloning for instance
+# ./my-new-api could already contain a .git directory, after a git cloning for instance
 cd ./my-new-api 
 
 # Then, we can bootstrap right here with this:
-aldev bootstrap --name MyNewApi --web-less -d .
+aldev bootstrap -n MyNewApi -w --destination .
+```
+:::
+
+:::info
+We can also bootstrap the project and **git-init it right away**:
+
+```sh
+cd $GITPRIV
+aldev bootstrap -n MyNewApi -w --repo my-git.domain.com --group group-name[/subgroup]
+
+# this creates and push the new project to https://my-git.domain.com/group-name[/subgroup]
 ```
 :::
 
@@ -71,6 +89,11 @@ Which can be confirmed by checking with this:
 ```sh
 podman ps
 ```
+
+:::warning
+As you'll learn later on, `aldev` generates config files, for local building & testing, as well as remote deployment. Depending on the configured deployment platform and CI/CD method, it might require for the project to be `git`-initialized.
+TODO isGitRepoNeeded
+:::
 
 <br/>
 
@@ -128,24 +151,83 @@ In particular:
 For now:
 
 - only the value `"azure"` for `deploying > platform` has an effect: it triggers the creation of Terraform Azure configs in the `deploy/remote` folder
-- only the value `"gitlab"` for `deploying > cicd`, in conjonction with `deploying > platform = azure` has an effect: it triggers the creation of a `.gitlab-ci.yml` file, which help deploying to Azure
+- only the value `"gitlab"` for `deploying > cicd`, in conjonction with `deploying > platform = azure` has an effect: it triggers the creation of a `.gitlab-ci.yml` file, which help continuously deploying to Azure
 
 [top](#)
 
 #### First deployment steps
 
 1. Fill in the necessary deployment info in `.aldev.yaml` - i.e. remove the `???` placeholders
-2. Force the regeneration of all the config files with `aldev confgen --regen` or `aldev confgen -r`
-3. Git-push the code to its remote `main` branch to deploy to the `SANDBOX` environment (for instance: `dev`)
-   1. Git-tag (`git tag v0.0.1`), and `git push --tags`, to deploy to the `STAGING` environment (for instance: `qua`)
-   1. Manually trigger the _production deploy job_ to deploy to the `PRODUCTION` environment (for instance: `prd`)
-4. Go into the `deploy/remote` folder and use the IaC configs
-   1. For instance, if `platform = azure`, run `terraform apply` from within each subfolder of `deploy/remote`
-5. Test the deployment has gone ok
+2. Force the regeneration of all the config files with `aldev confgen --regen -v` or `aldev confgen -r -v`
 
-:::warning
-Step `3.` - and its substeps - will probably fail the first time, until `4.` is done, i.e. the remote infrastructure is in place. 
-:::
+##### Azure deployment + Gitlab CI: requirements
+
+- 1 AZ Storage Account & 1 Storage Container for the TF states (+ 1 Resource Group for both)
+- 1 AZ Container Registry (+ 1 Resource Group)
+- Registering of the env subscritions:
+  - `az provider register --namespace Microsoft.App --subscription sub-for-staging/test/production`
+
+[top](#)
+
+##### Azure deployment + Gitlab CI: creating the infra - SANDBOX env ("dev")
+
+If `deploying > platform = azure` and `deploying > cicd = gitlab` (only case handled for now):
+
+1. Go into the `deploy/remote/0-glo` folder and use the IaC configs: `terraform init`, then `terraform apply`
+
+   > _This creates the global resources, i.e. an app registration & federated credentials for Gitlab_
+  
+2. Go into the `deploy/remote/1-dev` (or `deploy/remote/1-customsandboxname`) folder and use the IaC configs: `terraform init`, then `terraform apply`
+  
+   > _This creates all the required infrastructure to deploy the API in Azure in a SANDBOX environment_
+  
+3. The creation may first appear as failed, in particular with resource `module.infra_dev.azurerm_container_app.aca` (or `.infra_customsandboxname.` instead)
+   1. `terraform apply` once more. Then, you might see something like this: `a resource with the ID "/subscriptions/xxxx/resourceGroups/rg_name/providers/Microsoft.App/containerApps/aca-app-name" already exists`
+   2. This is because of the **chicken and egg problem** we have here. The `ACA` resource is considered deployed only when it can serve the configured containerised service. But we can't deploy this service as long as the `ACA` resource is not up. Hence the next step. 
+
+4. Git-push the code to its remote `main` branch to deploy to the `SANDBOX` environment (which may be called `dev`)
+
+5. Now, to synchronize the local TF state with the Azure state, do,  with the ID seen at step 4.i.: `terraform import module.infra_dev.azurerm_container_app.aca /subscriptions/bla/bla`,  (change `.infra_dev.` if necessary)
+
+6. You can finally check with `terraform plan` that everything is fine: 
+
+    > `No changes. Your infrastructure matches the configuration.`
+
+[top](#)
+
+##### Azure deployment + Gitlab CI: creating the infra - STAGING env ("qua")
+
+1. Go into the `deploy/remote/2-qua` (or `deploy/remote/1-customstagingname`) folder and use the IaC configs: `terraform init`, then `terraform apply`
+  
+   > _This creates all the required infrastructure to deploy the API in Azure in a STAGING environment_
+
+2. This should fail a first time. Do another `terraform apply` that should fail once again, and note the ID of the resource that "already exists".
+
+3. `git tag v0.0.1 && git push --tags` to deploy to the `STAGING` environment (named for instance: `qua`)
+
+4. Now, to synchronize the local TF state with the Azure state, do with the ID seen at step 4.i.: `terraform import module.infra_qua.azurerm_container_app.aca /subscriptions/bla/bla` (change `.infra_qua.` if necessary)
+
+5. You can finally check with `terraform plan` that everything is fine: 
+
+    > `No changes. Your infrastructure matches the configuration.`
+
+[top](#)
+
+##### Azure deployment + Gitlab CI: creating the infra - PRODUCTION env ("prd")
+
+1. Go into the `deploy/remote/3-prd` (or `deploy/remote/1-customproductionname`) folder and use the IaC configs: `terraform init`, then `terraform apply`
+  
+   > _This creates all the required infrastructure to deploy the API in Azure in a PRODUCTION environment_
+
+2. This should fail a first time. Do another `terraform apply` that should fail once again, and note the ID of the resource that "already exists".
+
+3. Go to Gitlab, then manually run the last "deploy_prd" job to deploy to the `PRODUCTION` environment (named for instance: `prd`)
+
+4. Now, to synchronize the local TF state with the Azure state, do with the ID seen at step 4.i.: `terraform import module.infra_prd.azurerm_container_app.aca /subscriptions/bla/bla` (change `.infra_prd.` if necessary)
+
+5. You can finally check with `terraform plan` that everything is fine: 
+
+    > `No changes. Your infrastructure matches the configuration.`
 
 <br/>
 
