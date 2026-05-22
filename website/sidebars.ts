@@ -19,7 +19,7 @@ const sidebars: SidebarsConfig = {
             type: 'category',
             label: 'Getting started',
             items: [
-                'start/index',
+                'start/intro',
                 {
                     type: 'doc',
                     id: 'start/prerequisites',

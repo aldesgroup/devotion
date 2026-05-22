@@ -63,7 +63,7 @@ flowchart
     classDef clsOther fill:#555555,color:#fff;
     classDef clsTool fill:#117799,color:#fff;
 
-    Aldev{{Aldev}}:::clsTool
+    Aldev{{"Aldev <br> (tools)"}}:::clsTool
 ```
 
 :::tip[As we'll see later on]
