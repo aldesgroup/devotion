@@ -24,16 +24,6 @@ Here we describe how to can start new Devotion projects.
 
 ### Project creation
 
-```sh
-cd $GITPRIV && aldev bootstrap --name MyNewApi --web-less
-
-# shorter:
-cd $GITPRIV && aldev bootstrap -n MyNewApi -w
-```
-
-This creates a new project in a folder called: `./my-new-api`.
-
-:::info
 To bootstrap within an **existing Git project**:
 
 ```sh
@@ -43,7 +33,6 @@ cd ./my-new-api
 # Then, we can bootstrap right here with this:
 aldev bootstrap -n MyNewApi -w --destination .
 ```
-:::
 
 :::info
 We can also bootstrap the project and **git-init it right away**:
@@ -66,9 +55,11 @@ The Go API code is in the `/api` folder.
 
 ### Running the new API
 
-First, go into the project: `cd my-new-api`.
+First, go into the project: `cd my-new-api`. 
 
-We run the API server with just:
+**Then, for the `aldev` command to work, its config, the `.aldev.yaml` file, should be filled up / completed.**
+
+Once the config (`.aldev.yaml`) is set up, we run the API server with just:
 
 ```sh
 aldev
