@@ -4,7 +4,9 @@
   - [Requirements](#requirements)
   - [Creating (or updating) the GLOBAL resources](#creating-or-updating-the-global-resources)
   - [Pushing a first release](#pushing-a-first-release)
-  - [Creating (or updating) the SANDBOX env ("dev") resources](#creating-or-updating-the-sandbox-env-dev-resources)
+  - [Creating (or updating) the SANDBOX env (e.g. "dev") resources](#creating-or-updating-the-sandbox-env-eg-dev-resources)
+  - [Creating (or updating) the STAGING env (e.g. "qua") resources](#creating-or-updating-the-staging-env-eg-qua-resources)
+  - [Creating (or updating) the PRODUCTION env (e.g. "prd") resources](#creating-or-updating-the-production-env-eg-prd-resources)
 
 
 ## Requirements
@@ -72,88 +74,93 @@ The Gitlab pipeline should build successfully, but the deploy step should fail a
 
 ---
 
-## Creating (or updating) the SANDBOX env ("dev") resources
-
-
-
-Finally, to test your deployment: 
-
-- re-do a [release](#pushing-a-first-release) or restart the whole Gitlab pipeline or just the deploy jobs.
-- test an HTTP call, like this:
+## Creating (or updating) the SANDBOX env (e.g. "dev") resources
 
 ```sh
-TODO
+# From the project's root dir, go into the folder for the sandbox infra elements
+cd deploy/remote/a-infra/1-dev 
+
+# Init the Terraform state
+az account set --subscription "your-sub-where-your-apps-live" && terraform init
+
+# Apply the main.tf file - don't forget to say "yes" :)
+terraform apply
 ```
 
+If this fails, which might happen because the app is not deployed to ACA for `dev` yet (chicken & egg problem), then:
 
+- re-do a [release](#pushing-a-first-release) or restart the latest whole Gitlab pipeline.
+- to sync the TF state: `terraform apply`, which might fail again, then:
+  - `terraform import module.infra_dev.azurerm_container_app.aca /subscriptions/xxxx/.../containerApps/aca-app-name`
+  - `terraform plan` should say everything is fine now
 
+Finally, to test your deployment, let's make an HTTP call, like this:
 
-<!-- ## Azure deployment + Gitlab CI: creating the infra - SANDBOX env ("dev")
-
-If `deploying > platform = azure` and `deploying > cicd = gitlab` (only case handled for now):
-
-1. Go into the `deploy/remote/0-glo` folder and use the IaC configs: `terraform init`, then `terraform apply`
-
-   > _This creates the global resources, i.e. an app registration & federated credentials for Gitlab_
-  
-2. Go into the `deploy/remote/1-dev` (or `deploy/remote/1-customsandboxname`) folder and use the IaC configs: `terraform init`, then `terraform apply`
-  
-   > _This creates all the required infrastructure to deploy the API in Azure in a SANDBOX environment_
-  
-3. The creation may first appear as failed, in particular with resource `module.infra_dev.azurerm_container_app.aca` (or `.infra_customsandboxname.` instead)
-   1. `terraform apply` once more. Then, you might see something like this: `a resource with the ID "/subscriptions/xxxx/resourceGroups/rg_name/providers/Microsoft.App/containerApps/aca-app-name" already exists`
-   2. This is because of the **chicken and egg problem** we have here. The `ACA` resource is considered deployed only when it can serve the configured containerised service. But we can't deploy this service as long as the `ACA` resource is not up. Hence the next step. 
-
-4. Git-push the code to its remote `main` branch to deploy to the `SANDBOX` environment (which may be called `dev`)
-
-5. Now, to synchronize the local TF state with the Azure state, do,  with the ID seen at step 4.i.: `terraform import module.infra_dev.azurerm_container_app.aca /subscriptions/bla/bla`,  (change `.infra_dev.` if necessary)
-
-6. You can finally check with `terraform plan` that everything is fine: 
-
-    > `No changes. Your infrastructure matches the configuration.`
+```sh
+curl https://my-apim-name.azure-api.net/foobar-dev/rest/translation/fr\?Namespace\=Common 
+```
 
 [top](#)
 
 ---
 
-## Azure deployment + Gitlab CI: creating the infra - STAGING env ("qua")
+## Creating (or updating) the STAGING env (e.g. "qua") resources
 
-1. Go into the `deploy/remote/2-qua` (or `deploy/remote/1-customstagingname`) folder and use the IaC configs: `terraform init`, then `terraform apply`
-  
-   > _This creates all the required infrastructure to deploy the API in Azure in a STAGING environment_
+```sh
+# From the project's root dir, go into the folder for the staging infra elements
+cd deploy/remote/a-infra/2-qua 
 
-2. This should fail a first time. Do another `terraform apply` that should fail once again, and note the ID of the resource that "already exists".
+# Init the Terraform state
+az account set --subscription "your-sub-where-your-apps-live" && terraform init
 
-3. `git tag v0.0.1 && git push --tags` to deploy to the `STAGING` environment (named for instance: `qua`)
+# Apply the main.tf file - don't forget to say "yes" :)
+terraform apply
+```
 
-4. Now, to synchronize the local TF state with the Azure state, do with the ID seen at step 4.i.: `terraform import module.infra_qua.azurerm_container_app.aca /subscriptions/bla/bla` (change `.infra_qua.` if necessary)
+If this fails, which might happen because the app is not deployed to ACA for `qua` yet (chicken & egg problem), then:
 
-5. You can finally check with `terraform plan` that everything is fine: 
+- re-do a [release](#pushing-a-first-release) or restart the latest whole Gitlab pipeline.
+- to sync the TF state: `terraform apply`, which might fail again, then:
+  - `terraform import module.infra_qua.azurerm_container_app.aca /subscriptions/xxxx/.../containerApps/aca-app-name`
+  - `terraform plan` should say everything is fine now
 
-    > `No changes. Your infrastructure matches the configuration.`
+Finally, to test your deployment, let's make an HTTP call, like this:
+
+```sh
+curl https://my-apim-name.azure-api.net/foobar-qua/rest/translation/fr\?Namespace\=Common 
+```
 
 [top](#)
 
 ---
 
-## Azure deployment + Gitlab CI: creating the infra - PRODUCTION env ("prd")
+## Creating (or updating) the PRODUCTION env (e.g. "prd") resources
 
-1. Go into the `deploy/remote/3-prd` (or `deploy/remote/1-customproductionname`) folder and use the IaC configs: `terraform init`, then `terraform apply`
-  
-   > _This creates all the required infrastructure to deploy the API in Azure in a PRODUCTION environment_
+```sh
+# From the project's root dir, go into the folder for the staging infra elements
+cd deploy/remote/a-infra/3-prd 
 
-2. This should fail a first time. Do another `terraform apply` that should fail once again, and note the ID of the resource that "already exists".
+# Init the Terraform state
+az account set --subscription "your-sub-where-your-apps-live" && terraform init
 
-3. Go to Gitlab, then manually run the last "deploy_prd" job to deploy to the `PRODUCTION` environment (named for instance: `prd`)
+# Apply the main.tf file - don't forget to say "yes" :)
+terraform apply
+```
 
-4. Now, to synchronize the local TF state with the Azure state, do with the ID seen at step 4.i.: `terraform import module.infra_prd.azurerm_container_app.aca /subscriptions/bla/bla` (change `.infra_prd.` if necessary)
+If this fails, which might happen because the app is not deployed to ACA for `prd` yet (chicken & egg problem), then:
 
-5. You can finally check with `terraform plan` that everything is fine: 
+- re-do a [release](#pushing-a-first-release) or restart the latest whole Gitlab pipeline.
+- to sync the TF state: `terraform apply`, which might fail again, then:
+  - `terraform import module.infra_prd.azurerm_container_app.aca /subscriptions/xxxx/.../containerApps/aca-app-name`
+  - `terraform plan` should say everything is fine now
 
-    > `No changes. Your infrastructure matches the configuration.`
+Finally, to test your deployment, let's make an HTTP call, like this:
 
-<br/>
+```sh
+curl https://my-apim-name.azure-api.net/foobar-qua/rest/translation/fr\?Namespace\=Common 
+```
 
 [top](#)
 
---- -->
+---
+
