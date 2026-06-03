@@ -76,8 +76,16 @@ Which can be confirmed by checking with this:
 podman ps
 ```
 
-:::warning
-As you'll learn later on, `aldev` generates config files, for local building & testing, as well as remote deployment. Depending on the configured deployment platform and CI/CD method, it might require for the project to be `git`-initialized.
+<br/>
+
+:::info
+**Don't git-push anything just yet**, we'll need to do it later on, at the [deployment](#deploying) stage.
+:::
+
+<br/>
+
+:::note
+As you'll learn later on, `aldev` generates config files, for local building & testing, as well as remote deployment. Depending on the configured deployment platform and CI/CD method, it might require for the project to be `git`-initialized - which is automatically the case if you've used `aldev bootstrap` with the `--repo` arg.
 :::
 
 <br/>
@@ -88,13 +96,15 @@ As you'll learn later on, `aldev` generates config files, for local building & t
 
 #### Developing & testing the API
 
-You can start modifying the Go code in the `/api` folder. 
+You can start modifying the Go code in the `/api` folder **while `aldev` is running.** 
 
 > More details about how it's architectured in the [Goald documentation](../3-goald/index.md).
 
 As soon as you save your changes, [aldev](../2-aldev/index.md) will perform automatic operations, and locally re-deploy the updated server's instances.
 
-Which allow for quick _dev & test_ iterations.
+:::tip[You guessed it...]
+This allows for **quick _dev & test_ iterations**.
+:::
 
 <br/>
 

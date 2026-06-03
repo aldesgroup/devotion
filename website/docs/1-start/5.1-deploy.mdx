@@ -3,10 +3,8 @@
 - [Gitlab CI/CD + Azure deployment](#gitlab-cicd--azure-deployment)
   - [Requirements](#requirements)
   - [Creating (or updating) the GLOBAL resources](#creating-or-updating-the-global-resources)
-  - [Pushing a first release](#pushing-a-first-release)
   - [Creating (or updating) the SANDBOX env (e.g. "dev") resources](#creating-or-updating-the-sandbox-env-eg-dev-resources)
   - [Creating (or updating) the STAGING env (e.g. "qua") resources](#creating-or-updating-the-staging-env-eg-qua-resources)
-  - [Creating (or updating) the PRODUCTION env (e.g. "prd") resources](#creating-or-updating-the-production-env-eg-prd-resources)
 
 
 ## Requirements
@@ -49,54 +47,36 @@ terraform apply
 
 ---
 
-## Pushing a first release
-
-Make sure you have locally [run](#running-the-new-api) the API a bit before moving on. **This created all the needed deployment config files along the way.**
-
-When you're done testing - and maybe modifying / git syncing some stuff - do a first `SANDBOX` (dev) release by committing / pushing all the current changes, or should you want to try a `STAGING` release, do it with `aldev release`:
-
-```sh
-aldev release patch
-
-# or, if you want to see what's going on
-aldev release patch -v
-
-# other options for `aldev release`: "minor", and "major"
-```
-
-<br/>
-
-:::warning
-The Gitlab pipeline should build successfully, but the deploy step should fail at this stage, because we yet have to create the AZ resources for the target environments, like for the [SANBOX env (dev)](#d-azure-deployment--gitlab-ci-sandbox-env-dev).
-:::
-
-[top](#)
-
----
-
 ## Creating (or updating) the SANDBOX env (e.g. "dev") resources
 
 ```sh
+# Keeping track of our project's name
+PROJ_DIR=foo-bar
+
 # From the project's root dir, go into the folder for the sandbox infra elements
-cd deploy/remote/a-infra/1-dev 
+cd $GITPRIV/$PROJ_DIR/deploy/remote/a-infra/1-dev 
 
 # Init the Terraform state
 az account set --subscription "your-sub-where-your-apps-live" && terraform init
 
-# Apply the main.tf file - don't forget to say "yes" :)
+# Apply the main.tf file - don't forget to say "yes" :) It's ok if it seems to fail at first
 terraform apply
-```
 
-If this fails, which might happen because the app is not deployed to ACA for `dev` yet (chicken & egg problem), then:
+# Do a "release" for the SANDBOX environment
+cd $GITPRIV/$PROJ_DIR && git add . && git commit -m "dev: first commit" && git push
 
-- re-do a [release](#pushing-a-first-release) or restart the latest whole Gitlab pipeline.
-- to sync the TF state: `terraform apply`, which might fail again, then:
-  - `terraform import module.infra_dev.azurerm_container_app.aca /subscriptions/xxxx/.../containerApps/aca-app-name`
-  - `terraform plan` should say everything is fine now
+# Check the CI/CD pipelines in Gitlab and wait for the jobs to finish
 
-Finally, to test your deployment, let's make an HTTP call, like this:
+# Sync the Terraform state - say yes - this will fail saying an ID already exists
+cd $GITPRIV/$PROJ_DIR/deploy/remote/a-infra/1-dev && terraform apply
 
-```sh
+# So copy the ID and use it like this:
+terraform import module.infra_dev.azurerm_container_app.aca /subscriptions/xxxx/.../containerApps/aca-app-name
+
+# You can verify everything went fine with:
+terraform plan
+
+# Test your new environment!
 curl https://my-apim-name.azure-api.net/foobar-dev/rest/translation/fr\?Namespace\=Common 
 ```
 
@@ -107,56 +87,30 @@ curl https://my-apim-name.azure-api.net/foobar-dev/rest/translation/fr\?Namespac
 ## Creating (or updating) the STAGING env (e.g. "qua") resources
 
 ```sh
-# From the project's root dir, go into the folder for the staging infra elements
-cd deploy/remote/a-infra/2-qua 
+# From the project's root dir, go into the folder for the sandbox infra elements
+cd $GITPRIV/$PROJ_DIR/deploy/remote/a-infra/2-qua 
 
 # Init the Terraform state
 az account set --subscription "your-sub-where-your-apps-live" && terraform init
 
-# Apply the main.tf file - don't forget to say "yes" :)
+# Apply the main.tf file - don't forget to say "yes" :) It's ok if it seems to fail at first
 terraform apply
-```
 
-If this fails, which might happen because the app is not deployed to ACA for `qua` yet (chicken & egg problem), then:
+# Do a release for the STAGING environment
+cd $GITPRIV/$PROJ_DIR && aldev release patch
 
-- re-do a [release](#pushing-a-first-release) or restart the latest whole Gitlab pipeline.
-- to sync the TF state: `terraform apply`, which might fail again, then:
-  - `terraform import module.infra_qua.azurerm_container_app.aca /subscriptions/xxxx/.../containerApps/aca-app-name`
-  - `terraform plan` should say everything is fine now
+# Check the CI/CD pipelines in Gitlab and wait for the jobs to finish
 
-Finally, to test your deployment, let's make an HTTP call, like this:
+# Sync the Terraform state - say yes - this will fail saying an ID already exists
+cd $GITPRIV/$PROJ_DIR/deploy/remote/a-infra/2-qua && terraform apply
 
-```sh
-curl https://my-apim-name.azure-api.net/foobar-qua/rest/translation/fr\?Namespace\=Common 
-```
+# So copy the ID and use it like this:
+terraform import module.infra_qua.azurerm_container_app.aca /subscriptions/xxxx/.../containerApps/aca-app-name
 
-[top](#)
+# You can verify everything went fine with:
+terraform plan
 
----
-
-## Creating (or updating) the PRODUCTION env (e.g. "prd") resources
-
-```sh
-# From the project's root dir, go into the folder for the staging infra elements
-cd deploy/remote/a-infra/3-prd 
-
-# Init the Terraform state
-az account set --subscription "your-sub-where-your-apps-live" && terraform init
-
-# Apply the main.tf file - don't forget to say "yes" :)
-terraform apply
-```
-
-If this fails, which might happen because the app is not deployed to ACA for `prd` yet (chicken & egg problem), then:
-
-- re-do a [release](#pushing-a-first-release) or restart the latest whole Gitlab pipeline.
-- to sync the TF state: `terraform apply`, which might fail again, then:
-  - `terraform import module.infra_prd.azurerm_container_app.aca /subscriptions/xxxx/.../containerApps/aca-app-name`
-  - `terraform plan` should say everything is fine now
-
-Finally, to test your deployment, let's make an HTTP call, like this:
-
-```sh
+# Test your new environment!
 curl https://my-apim-name.azure-api.net/foobar-qua/rest/translation/fr\?Namespace\=Common 
 ```
 
