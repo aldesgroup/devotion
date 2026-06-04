@@ -79,7 +79,7 @@ Nothing beats [iTerm2](https://iterm2.com/) :)
 
 If not already there:
 
-```sh
+```bash
 # in a terminal
 sudo apt update && sudo apt upgrade -y
 
@@ -97,7 +97,7 @@ TODO
 
 Then, for each project:
 
-```sh
+```bash
 git config user.email "firstname.lastname@domain.com"
 git config user.name "Firstname Lastname"
 ```
@@ -105,7 +105,7 @@ git config user.name "Firstname Lastname"
 Or, if you have only one developer identify, you can do once and for all:
 
 
-```sh
+```bash
 git config --global user.email "firstname.lastname@domain.com"
 git config --global user.name "Firstname Lastname"
 ```
@@ -122,13 +122,13 @@ Why Homebrew - with its `brew` command ? Because it works on Linux AND MacOS.
 
 **Install** it following the [very first instruction](https://brew.sh/):
 
-```sh
+```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
 Then, the following is important:
 
-```sh
+```bash
 # Linux
 sudo apt install build-essential procps -y
 
@@ -165,7 +165,7 @@ If you're interested in VScode, then:
 <Tabs groupId="operating-systems">
   <TabItem value="Linux" default>
 
-```sh
+```bash
 # vs code keys and sources list
 echo 'code code/add-microsoft-repo boolean true' | sudo debconf-set-selections
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /tmp/packages.microsoft.gpg
@@ -183,7 +183,7 @@ sudo apt install -qqy code
   </TabItem>
   <TabItem value="macOS">
 
-```sh
+```bash
 brew install --cask visual-studio-code
 ```
 
@@ -213,7 +213,7 @@ brew install --cask visual-studio-code
 
 If you haven't your favorite tool yet, try ZSH, the great shell engine:
 
-```sh
+```bash
 brew install zsh
 zsh --version
 echo $(which zsh) | sudo tee -a /etc/shells
@@ -222,7 +222,7 @@ chsh -s $(which zsh)
 
 Then install oh-my-zsh:
 
-```sh
+```bash
 brew install wget
 
 # doing this from the right place!

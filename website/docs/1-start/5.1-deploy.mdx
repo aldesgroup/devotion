@@ -32,7 +32,7 @@ On Azure's side:
 
 Run this to create an AZ app, and rights for Gitlab to use AZ for deployment purposes:
 
-```sh
+```bash
 # From the project's root dir, go into the folder for the global infra elements
 cd deploy/remote/a-infra/0-glo 
 
@@ -49,7 +49,7 @@ terraform apply
 
 ## Creating (or updating) the SANDBOX env (e.g. "dev") resources
 
-```sh
+```bash
 # Keeping track of our project's name
 PROJ_DIR=foo-bar
 
@@ -86,7 +86,7 @@ curl https://my-apim-name.azure-api.net/foobar-dev/rest/translation/fr\?Namespac
 
 ## Creating (or updating) the STAGING env (e.g. "qua") resources
 
-```sh
+```bash
 # From the project's root dir, go into the folder for the sandbox infra elements
 cd $GITPRIV/$PROJ_DIR/deploy/remote/a-infra/2-qua 
 

@@ -18,7 +18,7 @@ const sidebars: SidebarsConfig = {
         {
             type: 'category',
             label: 'Getting started',
-            items: [
+            items: [        
                 'start/intro',
                 {
                     type: 'doc',
@@ -34,6 +34,17 @@ const sidebars: SidebarsConfig = {
                     type: 'doc',
                     id: 'start/bootstrap',
                     label: 'Bootstrap',
+                },
+                {
+                    type: 'category',
+                    label: 'Deploy',
+                    items: [
+                        {
+                            type: 'doc',
+                            id: 'start/5.1-deploy',
+                            label: 'Gitlab + Azure',
+                        },
+                    ]
                 },
             ],
         },

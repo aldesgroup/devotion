@@ -21,7 +21,7 @@ Here we describe how to can start new Devotion projects.
 
 To bootstrap within an **existing Git project**:
 
-```sh
+```bash
 # ./my-new-api could already contain a .git directory, after a git cloning for instance
 cd ./my-new-api 
 
@@ -32,7 +32,7 @@ aldev bootstrap -n MyNewApi -w --destination .
 :::info
 We can also bootstrap the project and **git-init it right away**:
 
-```sh
+```bash
 cd $GITPRIV
 aldev bootstrap -n MyNewApi -w --repo my-git.domain.com --group group-name[/subgroup]
 
@@ -56,13 +56,13 @@ First, go into the project: `cd my-new-api`.
 
 Once the config (`.aldev.yaml`) is set up, we run the API server with just:
 
-```sh
+```bash
 aldev
 ```
 
 Or, if you want more details about what's under the hood:
 
-```sh
+```bash
 aldev -v
 # or
 aldev --verbose
@@ -72,7 +72,7 @@ You can learn more about [`aldev`](../2-aldev/index.md) later, but what you can 
 
 Which can be confirmed by checking with this:
 
-```sh
+```bash
 podman ps
 ```
 
@@ -116,7 +116,7 @@ This allows for **quick _dev & test_ iterations**.
 
 To test, do this in another terminal window:
 
-```sh
+```bash
 # adapt the port to what's actually configured
 curl http://localhost:42069/rest/translation/fr\?Namespace\=Common
 ```
