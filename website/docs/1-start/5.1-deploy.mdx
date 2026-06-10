@@ -5,6 +5,7 @@
   - [Creating (or updating) the GLOBAL resources](#creating-or-updating-the-global-resources)
   - [Creating (or updating) the SANDBOX env (e.g. "dev") resources](#creating-or-updating-the-sandbox-env-eg-dev-resources)
   - [Creating (or updating) the STAGING env (e.g. "qua") resources](#creating-or-updating-the-staging-env-eg-qua-resources)
+  - [Creating (or updating) the PRODUCTION env (e.g. "prd") resources](#creating-or-updating-the-production-env-eg-prd-resources)
 
 
 ## Requirements
@@ -37,7 +38,7 @@ Run this to create an AZ app, and rights for Gitlab to use AZ for deployment pur
 cd deploy/remote/a-infra/0-glo 
 
 # Init the Terraform state
-az account set --subscription "your-sub-where-your-apps-live" && terraform init
+az account set --subscription "your-sub-where-tf-states-live" && terraform init
 
 # Apply the main.tf file - don't forget to say "yes" :)
 terraform apply
@@ -57,7 +58,7 @@ PROJ_DIR=foo-bar
 cd $GITPRIV/$PROJ_DIR/deploy/remote/a-infra/1-dev 
 
 # Init the Terraform state
-az account set --subscription "your-sub-where-your-apps-live" && terraform init
+az account set --subscription "your-sub-where-tf-states-live" && terraform init
 
 # Apply the main.tf file - don't forget to say "yes" :) It's ok if it seems to fail at first
 terraform apply
@@ -91,7 +92,7 @@ curl https://my-apim-name.azure-api.net/foobar-dev/rest/translation/fr\?Namespac
 cd $GITPRIV/$PROJ_DIR/deploy/remote/a-infra/2-qua 
 
 # Init the Terraform state
-az account set --subscription "your-sub-where-your-apps-live" && terraform init
+az account set --subscription "your-sub-where-tf-states-live" && terraform init
 
 # Apply the main.tf file - don't forget to say "yes" :) It's ok if it seems to fail at first
 terraform apply
@@ -112,6 +113,39 @@ terraform plan
 
 # Test your new environment!
 curl https://my-apim-name.azure-api.net/foobar-qua/rest/translation/fr\?Namespace\=Common 
+```
+
+[top](#)
+
+---
+
+## Creating (or updating) the PRODUCTION env (e.g. "prd") resources
+
+```bash
+# From the project's root dir, go into the folder for the sandbox infra elements
+cd $GITPRIV/$PROJ_DIR/deploy/remote/a-infra/3-prd 
+
+# Init the Terraform state
+az account set --subscription "your-sub-where-tf-states-live" && terraform init
+
+# Apply the main.tf file - don't forget to say "yes" :) It's ok if it seems to fail at first
+terraform apply
+
+# Do a release for the PRODUCTION environment:
+# Go into Gitlab and manually trigger the latest "deploy_prod" job
+# and wait for the jobs to finish
+
+# Sync the Terraform state - say yes - this will fail saying an ID already exists
+cd $GITPRIV/$PROJ_DIR/deploy/remote/a-infra/3-prdyes && terraform apply
+
+# So copy the ID and use it like this:
+terraform import module.infra_prd.azurerm_container_app.aca /subscriptions/xxxx/.../containerApps/aca-app-name
+
+# You can verify everything went fine with:
+terraform plan
+
+# Test your new environment!
+curl https://my-prod-apim-name.azure-api.net/foobar-prd/rest/translation/fr\?Namespace\=Common 
 ```
 
 [top](#)
